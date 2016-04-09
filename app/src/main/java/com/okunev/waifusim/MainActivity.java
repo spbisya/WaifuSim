@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -28,44 +29,23 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements Callback<WaifuMessages> {
-
+    TextView textView, log;
+    Response<WaifuMessages> response;
+    int mNotificationId = 001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = (TextView)findViewById(R.id.tv1);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-getResp();
-            }
-        });
 
-        Notification notification = new Notification.Builder(getApplicationContext())
-                .setContentTitle("Your Waifu")
-                .setContentText("Сходи пропукайся, на улице солнышко!")
-                .setSmallIcon(R.drawable.ic_stat_1444249298867)
-                .build();
 
-        String jsonData = loadJSONFromAsset();
-        try {
-            JSONObject games = new JSONObject(jsonData);
-            JSONArray items = games.getJSONArray("items");
-            Toast.makeText(this, items.getJSONObject(0).getString("message"), Toast.LENGTH_LONG).show();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Sets an ID for the notification
-        int mNotificationId = 001;
-// Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-// Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, notification);
-
+        textView = (TextView) findViewById(R.id.tv1);
+        textView.setText("Wait");
+log = (TextView)findViewById(R.id.textView);
+        log.setText("Log started!\n");
+        getResp();
     }
 
-    public void getResp(){
+    public void getResp() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://ec2-52-38-11-210.us-west-2.compute.amazonaws.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -79,25 +59,33 @@ getResp();
         call.enqueue(this);
     }
 
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = this.getAssets().open("lotteries.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
     @Override
     public void onResponse(Response<WaifuMessages> response, Retrofit retrofit) {
-        Toast.makeText(this, response.body().items.get(1).toString(),Toast.LENGTH_LONG).show();
+        this.response = response;
+        textView.setText("Click me!");
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Random random = new Random();
+                int sise = random.nextInt(MainActivity.this.response.body().items.size());
+
+              //  Toast.makeText(MainActivity.this, MainActivity.this.response.body().items.get(sise).toString(), Toast.LENGTH_LONG).show();
+
+                Notification notification = new Notification.Builder(getApplicationContext())
+                        .setContentTitle("Your Waifu")
+                        .setContentText(MainActivity.this.response.body().items.get(sise).toString())
+                        .setSmallIcon(R.drawable.ic_stat_1444249298867)
+                        .build();
+
+                // Sets an ID for the notification
+              log.append("Random is "+sise+" and text is "+MainActivity.this.response.body().items.get(sise).toString()+"\n");
+// Gets an instance of the NotificationManager service
+                NotificationManager mNotifyMgr =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+// Builds the notification and issues it.
+                mNotifyMgr.notify(mNotificationId++, notification);
+            }
+        });
     }
 
     @Override
