@@ -22,11 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity implements Callback<WaifuMessages> {
     TextView textView, log;
@@ -60,7 +61,7 @@ log = (TextView)findViewById(R.id.textView);
     }
 
     @Override
-    public void onResponse(Response<WaifuMessages> response, Retrofit retrofit) {
+    public void onResponse(Call<WaifuMessages> call, Response<WaifuMessages> response) {
         this.response = response;
         textView.setText("Click me!");
         textView.setOnClickListener(new View.OnClickListener() {
@@ -88,8 +89,9 @@ log = (TextView)findViewById(R.id.textView);
         });
     }
 
+
     @Override
-    public void onFailure(Throwable t) {
+    public void onFailure(Call<WaifuMessages> call, Throwable t) {
 
     }
 }
