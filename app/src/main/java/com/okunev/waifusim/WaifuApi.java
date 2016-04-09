@@ -1,8 +1,7 @@
 package com.okunev.waifusim;
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.Call;
+import retrofit2.http.GET;
 
 /**
  * Created by gwa on 4/6/16.
