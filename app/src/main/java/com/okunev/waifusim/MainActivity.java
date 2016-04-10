@@ -43,6 +43,14 @@ public class MainActivity extends AppCompatActivity implements Callback<WaifuMes
         textView.setText("Wait");
 log = (TextView)findViewById(R.id.textView);
         log.setText("Log started!\n");
+        Button makeCall = (Button)findViewById(R.id.button);
+        makeCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(MainActivity.this, WaifuCallActivity.class);
+                startActivity(intent);
+            }
+        });
         getResp();
     }
 

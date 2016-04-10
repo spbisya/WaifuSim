@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:id="@+id/mainCallCard"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="300dip"
+        android:background="#FF3DB822">
+        <!-- "Upper title" at the very top of the CallCard. -->
+        <TextView android:id="@+id/upperTitle"
+            android:paddingTop="6dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Incoming Call"
+            android:textColor="@color/secondary_text_default_material_dark" />
+
+        <ImageView android:id="@+id/otherCallOngoingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dip"
+            android:layout_marginRight="8dip"
+            android:src="@drawable/yui"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Your Waifu"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="8 (800) 555-35-35"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/secondary_text_default_material_dark" />
+
+    </LinearLayout>
+    <RelativeLayout android:id="@+id/otherCallOngoingInfoArea"
+
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dip"
+        android:background="#FFFFFF">
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/accept"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/accept"
+            android:scaleType="fitCenter"
+            android:background="#FFFFFF" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/decline"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/reject"
+            android:scaleType="fitCenter"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="REJECT CALL WITH MESSAGE"
+            android:id="@+id/reject"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:background="@color/dim_foreground_disabled_material_dark"
+            android:textColor="#3c3c3c"
+            android:onClick="rejectMessage" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton3"
+            android:layout_centerHorizontal="true"
+            android:background="#FFFFFF" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/arrow"
+            android:layout_above="@+id/reject"
+            android:src="@drawable/arrow"
+            android:background="#FFFFFF"
+            android:scaleType="fitCenter"
+            android:onClick="rejectMessage"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>

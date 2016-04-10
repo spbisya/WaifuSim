@@ -25,7 +25,7 @@ public class WaifuNetworkReceiver extends BroadcastReceiver {
         boolean isConnected = wifi != null && wifi.isConnectedOrConnecting() ||
                 mobile != null && mobile.isConnectedOrConnecting();
         if (isConnected) {
-            setNot(context, "Ты в сети, поздравляю!", 006);
+            setNot(context, "Ты в сети, поздравляю!", 007);
         } else {
             setNot(context, "Молодец, показал характер! ВЕРНИСЬ!", 007);
         }
