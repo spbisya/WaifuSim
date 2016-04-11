@@ -7,22 +7,34 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.okunev.waifusim.MainActivity">
+    tools:context="com.okunev.waifusim.MainActivity"
+    android:background="@drawable/background">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/tv1"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="token = "
+        android:id="@+id/token"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:visibility="invisible" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
-        android:layout_below="@+id/tv1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true">
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="-10dp"
+        android:background="#c8ffdb85"
+        android:layout_alignBottom="@+id/token">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,12 +43,69 @@
             android:id="@+id/textView" />
     </ScrollView>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/waif"
+        android:maxHeight="300dp"
+        android:scaleType="fitCenter" />
+
     <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/call"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:background="@android:drawable/ic_menu_call" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Make a call"
-        android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Hello World!"
+        android:id="@+id/tv1"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/calendar"
+        android:layout_below="@+id/call"
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:background="#00ffffff"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/calendar"
+        android:scaleType="fitCenter"
+        android:onClick="notReady" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/alarm"
+        android:layout_below="@+id/calendar"
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_marginTop="5dp"
+        android:background="#00ffffff"
+        android:src="@drawable/alarm"
+        android:scaleType="fitCenter"
+        android:onClick="notReady" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/settings"
+        android:layout_below="@+id/tv1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:background="#00ffffff"
+        android:scaleType="fitCenter"
+        android:src="@drawable/settings"
+        android:onClick="goSettings" />
+
 </RelativeLayout>

@@ -16,17 +16,17 @@ public class WaifuBatteryReceiver extends BroadcastReceiver {
         // an Intent broadcast.
         if(intent.getAction().equals(Intent.ACTION_BATTERY_LOW))
         {
-setNot(context,"С-сенпай, не дай мне умереть!", 002);
+setNot(context,"С-сенпай, не дай мне умереть!", 999);
             // do your task here.
         }
         else if(intent.getAction().equals(Intent.ACTION_BATTERY_OKAY)){
-            setNot(context,"Cенпай не бака!", 003);
+            setNot(context,"Cенпай не бака!", 999);
         }
         else if(intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)){
-            setNot(context,"Нямка!!!", 004);
+            setNot(context,"Нямка!!!", 999);
         }
         else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)){
-            setNot(context,"Я не наелась!", 005);
+            setNot(context,"Я не наелась!", 999);
         }
 
     }
@@ -42,6 +42,6 @@ setNot(context,"С-сенпай, не дай мне умереть!", 002);
         int mNotificationId = id;
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId++, notification);
+        mNotifyMgr.notify(mNotificationId, notification);
     }
 }

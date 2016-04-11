@@ -25,9 +25,9 @@ public class WaifuNetworkReceiver extends BroadcastReceiver {
         boolean isConnected = wifi != null && wifi.isConnectedOrConnecting() ||
                 mobile != null && mobile.isConnectedOrConnecting();
         if (isConnected) {
-            setNot(context, "Ты в сети, поздравляю!", 007);
+            setNot(context, "Ты в сети, поздравляю!", 999);
         } else {
-            setNot(context, "Молодец, показал характер! ВЕРНИСЬ!", 007);
+            setNot(context, "Молодец, показал характер! ВЕРНИСЬ!", 999);
         }
 
 
@@ -44,6 +44,6 @@ public class WaifuNetworkReceiver extends BroadcastReceiver {
         int mNotificationId = id;
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId++, notification);
+        mNotifyMgr.notify(mNotificationId, notification);
     }
 }

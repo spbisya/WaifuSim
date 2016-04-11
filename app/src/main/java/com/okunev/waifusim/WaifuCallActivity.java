@@ -181,7 +181,7 @@ public class WaifuCallActivity extends AppCompatActivity {
                         NotificationManager mNotifyMgr =
                                 (NotificationManager) WaifuCallActivity.this.getSystemService(WaifuCallActivity.this.NOTIFICATION_SERVICE);
 // Builds the notification and issues it.
-                        mNotifyMgr.notify(mNotificationId++, notification);
+                        mNotifyMgr.notify(mNotificationId, notification);
                     }
                 }
             } else if (me.getAction() == MotionEvent.ACTION_UP) {
@@ -208,7 +208,7 @@ public class WaifuCallActivity extends AppCompatActivity {
                     NotificationManager mNotifyMgr =
                             (NotificationManager) WaifuCallActivity.this.getSystemService(WaifuCallActivity.this.NOTIFICATION_SERVICE);
 // Builds the notification and issues it.
-                    mNotifyMgr.notify(mNotificationId++, notification);
+                    mNotifyMgr.notify(mNotificationId, notification);
                 }
 
             }
@@ -234,7 +234,7 @@ public class WaifuCallActivity extends AppCompatActivity {
         NotificationManager mNotifyMgr =
                 (NotificationManager) WaifuCallActivity.this.getSystemService(WaifuCallActivity.this.NOTIFICATION_SERVICE);
 // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId++, notification);
+        mNotifyMgr.notify(mNotificationId, notification);
     }
 
 }

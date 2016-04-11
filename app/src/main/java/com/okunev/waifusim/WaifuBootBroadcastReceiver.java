@@ -23,12 +23,12 @@ public class WaifuBootBroadcastReceiver extends BroadcastReceiver {
                 .build();
 
         // Sets an ID for the notification
-        int mNotificationId = 001;
+        int mNotificationId = 999;
 // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId++, notification);
+        mNotifyMgr.notify(mNotificationId, notification);
        // Toast.makeText(context, "Привет, Антош!", Toast.LENGTH_LONG).show();
        // throw new UnsupportedOperationException("Not yet implemented");
     }
