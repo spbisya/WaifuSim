@@ -31,67 +31,69 @@ int seconds = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.answer_card);
         getSupportActionBar().hide();
-        player = new MediaPlayer();
-        try {
-           player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
-            player.setDataSource(this, Uri.parse("android.resource://com.okunev.waifusim/" + R.raw.nyasha));
-            player.prepare();
-            player.start();
-           player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-               @Override
-               public void onCompletion(MediaPlayer mp) {
-                   finish();
-               }
-           });
-            AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-            am.setSpeakerphoneOn(false);
-            am.setMode(AudioManager.MODE_IN_CALL);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //
-      //  player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        final Timer timer = new Timer();
-        final TimerTask task = new TimerTask() {
-            public void run() {
-                if(seconds<60)
-                seconds++;
-                else{
-                    seconds=0;
-                    minutes++;
-                }
-                setText();
-            }
-        };
-        timer.schedule(task, 0, 1000);
-
-        ImageButton decline = (ImageButton)findViewById(R.id.decline);
-        assert decline != null;
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                player.release();
-                ObjectAnimator animationType2 = ObjectAnimator.ofFloat(v, "rotation", 0f,
-                        (6.25f*180) / ((float) Math.PI));
-                animationType2.setDuration(700);
-                animationType2.start();
-                CountDownTimer countDownTimer = new CountDownTimer(700,700) {
+            player = new MediaPlayer();
+            try {
+                player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+                player.setDataSource(this, Uri.parse("android.resource://com.okunev.waifusim/" + R.raw.nyasha));
+                player.prepare();
+                player.start();
+                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
-                    public void onTick(long millisUntilFinished) {
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-
+                    public void onCompletion(MediaPlayer mp) {
                         finish();
                     }
-                }.start();
+                });
+                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                am.setSpeakerphoneOn(false);
+                am.setMode(AudioManager.MODE_IN_CALL);
 
+            } catch (IOException e) {
+             //   Toast.makeText(this, e.getMessage(),Toast.LENGTH_LONG).show();
             }
-        });
+            //
+            //  player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+            final Timer timer = new Timer();
+            final TimerTask task = new TimerTask() {
+                public void run() {
+                    if (seconds < 60)
+                        seconds++;
+                    else {
+                        seconds = 0;
+                        minutes++;
+                    }
+                    setText();
+                }
+            };
+            timer.schedule(task, 0, 1000);
+
+            ImageButton decline = (ImageButton) findViewById(R.id.decline);
+            assert decline != null;
+            decline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player.release();
+                    ObjectAnimator animationType2 = ObjectAnimator.ofFloat(v, "rotation", 0f,
+                            (6.25f * 180) / ((float) Math.PI));
+                    animationType2.setDuration(700);
+                    animationType2.start();
+                    CountDownTimer countDownTimer = new CountDownTimer(700, 700) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+                            finish();
+                        }
+                    }.start();
+
+                }
+            });
+
     }
 
     private void setText() {
