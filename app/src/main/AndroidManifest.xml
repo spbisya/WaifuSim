@@ -33,6 +33,9 @@
         <activity android:name=".SettingsActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name=".SampleActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"/>
 
         <service
             android:name=".MyService"

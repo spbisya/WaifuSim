@@ -80,7 +80,7 @@
         android:layout_marginTop="5dp"
         android:src="@drawable/calendar"
         android:scaleType="fitCenter"
-        android:onClick="notReady" />
+        android:onClick="goSample" />
 
     <ImageButton
         android:layout_width="50dp"

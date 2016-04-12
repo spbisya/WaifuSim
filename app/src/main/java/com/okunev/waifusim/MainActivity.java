@@ -140,5 +140,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goSample(View v) {
+        Intent intent = new Intent(this, SampleActivity.class);
+        startActivity(intent);
+    }
+
 
 }
