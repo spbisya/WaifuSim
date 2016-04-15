@@ -11,14 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+import com.okunev.waifusim.network.WaifuApi;
 
-import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by gwa on 4/11/16.
@@ -31,7 +28,6 @@ TextView or;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_settings);
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         curToken = (EditText) findViewById(R.id.curToken);
@@ -80,12 +76,7 @@ TextView or;
     }
 
     public void createUser() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-52-38-11-210.us-west-2.compute.amazonaws.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        WaifuApi waifuApi = retrofit.create(WaifuApi.class);
-        Call<Token> call = waifuApi.user();
+        Call<Token> call = WaifuApi.api().user();
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
