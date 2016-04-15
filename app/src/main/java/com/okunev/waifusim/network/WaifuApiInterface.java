@@ -1,4 +1,7 @@
-package com.okunev.waifusim;
+package com.okunev.waifusim.network;
+
+import com.okunev.waifusim.Token;
+import com.okunev.waifusim.WaifuMessages;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,7 +18,9 @@ import retrofit2.http.Query;
 /**
  * Created by gwa on 4/6/16.
  */
-public interface WaifuApi {
+public interface WaifuApiInterface {
+    String URL = "http://ec2-52-38-11-210.us-west-2.compute.amazonaws.com/";
+
     @GET("api/v1/waifu/1/messages")
     Call<WaifuMessages> loadMessages(@Query("token") String token);
 

@@ -14,17 +14,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-
-import io.fabric.sdk.android.Fabric;
+import com.okunev.waifusim.network.WaifuApi;
 
 import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         sPref = PreferenceManager.getDefaultSharedPreferences(this);;
@@ -84,12 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMessages(String token) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-52-38-11-210.us-west-2.compute.amazonaws.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        WaifuApi waifuApi = retrofit.create(WaifuApi.class);
-        Call<WaifuMessages> call = waifuApi.loadMessages(token);
+        Call<WaifuMessages> call = WaifuApi.api().loadMessages(token);
         call.enqueue(new Callback<WaifuMessages>() {
             @Override
             public void onResponse(Call<WaifuMessages> call, Response<WaifuMessages> response) {
