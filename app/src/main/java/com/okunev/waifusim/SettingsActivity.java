@@ -27,7 +27,8 @@ public class SettingsActivity extends AppCompatActivity {
     SharedPreferences sPref;
     Button getNewToken, save, changeToken;
     EditText curToken;
-TextView or;
+    TextView or;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ TextView or;
         setContentView(R.layout.activity_settings);
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         curToken = (EditText) findViewById(R.id.curToken);
-        or = (TextView)findViewById(R.id.textView5);
+        or = (TextView) findViewById(R.id.textView5);
         curToken.setText(sPref.getString("token", ""));
         curToken.setEnabled(false);
         getNewToken = (Button) findViewById(R.id.getNewToken);
@@ -61,14 +62,14 @@ TextView or;
                     @Override
                     public void onClick(View v) {
 
-                        Toast.makeText(SettingsActivity.this, "Saved!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_LONG).show();
                         sPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
                         SharedPreferences.Editor ed = sPref.edit();
                         ed.putString("token", curToken.getText().toString());
                         ed.commit();
                         finish();
-                        if(getIntent().getBooleanExtra("new",false)){
-                            Intent intent = new Intent( SettingsActivity.this, MainActivity.class);
+                        if (getIntent().getBooleanExtra("new", false)) {
+                            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
 
                             startActivity(intent);
                         }
@@ -89,16 +90,15 @@ TextView or;
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
-                Toast.makeText(SettingsActivity.this, "Token "+response.body().toString()+" generated!",Toast.LENGTH_LONG).show();
+                Toast.makeText(SettingsActivity.this, "Token " + response.body().toString() + " generated!", Toast.LENGTH_LONG).show();
                 curToken.setText(response.body().toString());
                 sPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
                 SharedPreferences.Editor ed = sPref.edit();
                 ed.putString("token", response.body().toString());
                 ed.commit();
                 finish();
-                if(getIntent().getBooleanExtra("new",false)){
-                    Intent intent = new Intent( SettingsActivity.this, MainActivity.class);
-
+                if (getIntent().getBooleanExtra("new", false)) {
+                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
             }

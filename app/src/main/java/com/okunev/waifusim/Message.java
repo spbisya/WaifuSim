@@ -9,6 +9,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return(message);
+        return (message);
     }
 }

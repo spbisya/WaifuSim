@@ -23,7 +23,7 @@ public class SampleActivity extends Activity {
         Live2D.init();
 
         SampleGLSurfaceView view = new SampleGLSurfaceView(this, (float) (getWindowManager().getDefaultDisplay().getWidth()),
-        (float)(getWindowManager().getDefaultDisplay().getHeight()));
+                (float) (getWindowManager().getDefaultDisplay().getHeight()));
         setContentView(view);
     }
 

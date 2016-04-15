@@ -1,7 +1,13 @@
 package com.okunev.waifusim;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,15 +15,21 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -40,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        sPref = PreferenceManager.getDefaultSharedPreferences(this);;
+        sPref = PreferenceManager.getDefaultSharedPreferences(this);
+        ;
         textView = (TextView) findViewById(R.id.tv1);
         tokenView = (TextView) findViewById(R.id.token);
         textView.setText("Wait");
@@ -56,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         token = sPref.getString("token", "-1");
-     //   tokenView.setText("token = " + token);
+        //   tokenView.setText("token = " + token);
         if (token.equals("-1")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Seems you have no generated tokens... Set one?")
@@ -96,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.response = response;
                 Toast.makeText(MainActivity.this, "" + MainActivity.this.response.body().items.size(), Toast.LENGTH_LONG).show();
                 textView.setText("Click me!");
-              //  tokenView.setText("token = " + MainActivity.this.token);
+                //  tokenView.setText("token = " + MainActivity.this.token);
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -143,6 +156,60 @@ public class MainActivity extends AppCompatActivity {
     public void goSample(View v) {
         Intent intent = new Intent(this, SampleActivity.class);
         startActivity(intent);
+    }
+
+    TimePickerDialog tpd = null;
+    Calendar cal;
+    Calendar calendar;
+    protected Dialog onCreateDialog(int id) {
+        if (id == 1) {
+            tpd = new TimePickerDialog(this, myCallBack, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);
+            return tpd;
+        }
+        return super.onCreateDialog(id);
+    }
+
+    TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int addHour, addMin;
+            int curHour = cal.get(Calendar.HOUR_OF_DAY), curMinute = cal.get(Calendar.MINUTE);
+          //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
+
+            if (hourOfDay < curHour & minute > curMinute) {
+                addHour = 24 - (curHour - hourOfDay);
+                addMin = minute - curMinute;
+            } else if (hourOfDay <= curHour & minute < curMinute) {
+                addHour = 23 - (curHour - hourOfDay);
+                addMin = 60 - (curMinute - minute);
+            } else {
+                addHour = hourOfDay - curHour;
+                addMin = minute - curMinute;
+            }
+            calendar.add(Calendar.HOUR_OF_DAY, addHour);
+            calendar.add(Calendar.MINUTE, addMin);
+            //Create a new PendingIntent and add it to the AlarmManager
+            Intent intent = new Intent(MainActivity.this, AlarmReceiverActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,
+                    12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager am =
+                    (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    pendingIntent);
+            Toast.makeText(MainActivity.this, "Alarm set to " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) +
+                    " in " + addHour + " hours & " + addMin + " minutes.", Toast.LENGTH_LONG).show();
+            tpd=null;
+            // input.setText("" + ((hourOfDay<10)?"0"+hourOfDay:hourOfDay) + ":" + ((minute<10)?"0"+minute:minute));
+
+            //22:11
+            //21:06
+            //22h 54 min
+        }
+    };
+
+    public void setAlarm(View v) {
+        calendar = Calendar.getInstance();
+        cal = Calendar.getInstance();
+        showDialog(1);
     }
 
 

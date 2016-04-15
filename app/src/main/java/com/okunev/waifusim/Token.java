@@ -5,8 +5,9 @@ package com.okunev.waifusim;
  */
 public class Token {
     String token;
+
     @Override
-    public String toString(){
+    public String toString() {
         return token;
     }
 }

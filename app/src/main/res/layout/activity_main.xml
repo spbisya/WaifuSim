@@ -93,7 +93,7 @@
         android:background="#00ffffff"
         android:src="@drawable/alarm"
         android:scaleType="fitCenter"
-        android:onClick="notReady" />
+        android:onClick="setAlarm" />
 
     <ImageView
         android:layout_width="50dp"

@@ -26,7 +26,7 @@ import jp.live2d.util.UtSystem;
 
 public class SampleGLSurfaceView extends GLSurfaceView {
     private SampleGLRenderer renderer;
-    private float x=0, y=0;
+    private float x = 0, y = 0;
 
     public SampleGLSurfaceView(final Context context, final float screen, final float height) {
         super(context);
@@ -36,14 +36,14 @@ public class SampleGLSurfaceView extends GLSurfaceView {
             public boolean onTouch(View v, MotionEvent me) {
                 if (me.getAction() == MotionEvent.ACTION_DOWN) {
                     x = me.getX();
-                    y= me.getY();
+                    y = me.getY();
                     float newValueX = me.getRawX();
                     float newValueY = me.getRawY();
                     float screenSize = screen;
 
                     renderer.screen = screenSize;
-                    renderer.sinus = 2*(newValueX/ screenSize)-1;
-                    renderer.cosinus = 1-(newValueY/ height);
+                    renderer.sinus = 2 * (newValueX / screenSize) - 1;
+                    renderer.cosinus = 1 - (newValueY / height);
                     //  Toast.makeText(context, "X = " + oldXvalue + " Y = " + oldYvalue +
                     //        " RawX = " + me.getRawX() + " RawY = " + me.getRawY(), Toast.LENGTH_LONG).show();
 
@@ -53,8 +53,8 @@ public class SampleGLSurfaceView extends GLSurfaceView {
                     float newValueY = me.getRawY();
                     float screenSize = screen;
                     renderer.screen = screenSize;
-                    renderer.sinus = 2*(newValueX/ screenSize)-1;
-                    renderer.cosinus = 1-(newValueY/ height);
+                    renderer.sinus = 2 * (newValueX / screenSize) - 1;
+                    renderer.cosinus = 1 - (newValueY / height);
 
                     //  renderer.setSinus(oldXvalue);
                     //  renderer.setCosinus(oldYvalue);
@@ -78,7 +78,7 @@ public class SampleGLSurfaceView extends GLSurfaceView {
 
         public float sinus = 0;
         public float cosinus = 0;
-public float screen = 0;
+        public float screen = 0;
 
         @Override
         public void onDrawFrame(GL10 gl) {
@@ -88,13 +88,13 @@ public float screen = 0;
 
             double t = (UtSystem.getUserTimeMSec() / 1000.0) * 2 * Math.PI;
             double cycle = 3.0;
-            double sin = Math.sin(t/cycle);
+            double sin = Math.sin(t / cycle);
             double cos = Math.sin(cosinus);
 
             live2DModel.setParamFloat("PARAM_ANGLE_X", 30 * sinus);
-           // Log.d("DRE", "Sin = " + sin + " 30*sin = " + 30 * (float) sin);
-         //   Log.d("DRE", "X = " + sinus + " Y = " + cosinus+" Screen = "+screen);
-             live2DModel.setParamFloat("PARAM_ANGLE_Y", 30 * cosinus);
+            // Log.d("DRE", "Sin = " + sin + " 30*sin = " + 30 * (float) sin);
+            //   Log.d("DRE", "X = " + sinus + " Y = " + cosinus+" Screen = "+screen);
+            live2DModel.setParamFloat("PARAM_ANGLE_Y", 30 * cosinus);
 
             live2DModel.setGL(gl);
 
