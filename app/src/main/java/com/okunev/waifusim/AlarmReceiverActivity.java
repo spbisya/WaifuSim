@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTouch;
+
 /**
  * Created by gwa on 4/15/16.
  */
@@ -30,17 +34,17 @@ public class AlarmReceiverActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.alarm_activity);
+        ButterKnife.bind(this);
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
-        stopAlarm.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View arg0, MotionEvent arg1) {
-                mMediaPlayer.stop();
-                finish();
-                return false;
-            }
-        });
 
         playSound(this, getAlarmUri());
+    }
+
+    @OnTouch(R.id.stopAlarm)
+    boolean onStopAlarmClick() {
+        mMediaPlayer.stop();
+        finish();
+        return false;
     }
 
     private void playSound(Context context, Uri alert) {

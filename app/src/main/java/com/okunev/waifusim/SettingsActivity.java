@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.okunev.waifusim.network.WaifuApi;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,58 +25,54 @@ import retrofit2.Response;
  */
 public class SettingsActivity extends AppCompatActivity {
     SharedPreferences sPref;
-    Button getNewToken, save, changeToken;
+    @Bind(R.id.getNewToken)
+    Button getNewToken;
+    @Bind(R.id.saveCurToken)
+    Button save;
+    @Bind(R.id.changeToken)
+    Button changeToken;
+    @Bind(R.id.curToken)
     EditText curToken;
+    @Bind(R.id.textView5)
     TextView or;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        ButterKnife.bind(this);
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
-        curToken = (EditText) findViewById(R.id.curToken);
-        or = (TextView) findViewById(R.id.textView5);
         curToken.setText(sPref.getString("token", ""));
         curToken.setEnabled(false);
-        getNewToken = (Button) findViewById(R.id.getNewToken);
-        changeToken = (Button) findViewById(R.id.changeToken);
-        save = (Button) findViewById(R.id.saveCurToken);
+    }
 
-        getNewToken.setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.getNewToken)
+    void onGetNewTokenClick() {
+        createUser();
+    }
+
+    @OnClick(R.id.changeToken)
+    void onChangeTokenClick() {
+        changeToken.setVisibility(View.INVISIBLE);
+        curToken.setEnabled(true);
+        or.setVisibility(View.INVISIBLE);
+        getNewToken.setVisibility(View.INVISIBLE);
+        save.setVisibility(View.VISIBLE);
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createUser();
+                Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_LONG).show();
+                sPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+                SharedPreferences.Editor ed = sPref.edit();
+                ed.putString("token", curToken.getText().toString());
+                ed.apply();
+                finish();
+                if (getIntent().getBooleanExtra("new", false)) {
+                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
         });
-
-        changeToken.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToken.setVisibility(View.INVISIBLE);
-                curToken.setEnabled(true);
-                or.setVisibility(View.INVISIBLE);
-                getNewToken.setVisibility(View.INVISIBLE);
-                save.setVisibility(View.VISIBLE);
-                save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_LONG).show();
-                        sPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-                        SharedPreferences.Editor ed = sPref.edit();
-                        ed.putString("token", curToken.getText().toString());
-                        ed.commit();
-                        finish();
-                        if (getIntent().getBooleanExtra("new", false)) {
-                            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-
-                            startActivity(intent);
-                        }
-                    }
-                });
-            }
-        });
-
     }
 
     public void createUser() {

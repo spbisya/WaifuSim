@@ -30,13 +30,22 @@ import com.okunev.waifusim.network.WaifuApi;
 import java.util.Calendar;
 import java.util.Random;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    TextView textView, log, tokenView;
+    @Bind(R.id.tv1)
+    TextView textView;
+    @Bind(R.id.textView)
+    TextView log;
+    @Bind(R.id.token)
+    TextView tokenView;
+
     Response<WaifuMessages> response;
     int mNotificationId = 999;
     SharedPreferences sPref;
@@ -46,22 +55,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
-        ;
-        textView = (TextView) findViewById(R.id.tv1);
-        tokenView = (TextView) findViewById(R.id.token);
         textView.setText("Wait");
-        log = (TextView) findViewById(R.id.textView);
         log.setText("Log started!\n");
-        Button makeCall = (Button) findViewById(R.id.call);
-        makeCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, WaifuCallActivity.class);
-                startActivity(intent);
-            }
-        });
 
         token = sPref.getString("token", "-1");
         //   tokenView.setText("token = " + token);
@@ -89,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
 
         } else
             getMessages(token);
+    }
+
+    @OnClick(R.id.call)
+    void onCallClick() {
+        Intent intent = new Intent(MainActivity.this, WaifuCallActivity.class);
+        startActivity(intent);
     }
 
     public void getMessages(String token) {
