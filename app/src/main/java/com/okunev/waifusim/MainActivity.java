@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,6 +29,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.okunev.waifusim.network.WaifuApi;
+
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -54,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Show this activity when device is locked
+        final Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
@@ -169,28 +185,27 @@ public class MainActivity extends AppCompatActivity {
             int curHour = cal.get(Calendar.HOUR_OF_DAY), curMinute = cal.get(Calendar.MINUTE);
           //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
 
-            if (hourOfDay < curHour & minute > curMinute) {
-                addHour = 24 - (curHour - hourOfDay);
-                addMin = minute - curMinute;
-            } else if (hourOfDay <= curHour & minute < curMinute) {
-                addHour = 23 - (curHour - hourOfDay);
-                addMin = 60 - (curMinute - minute);
-            } else {
-                addHour = hourOfDay - curHour;
-                addMin = minute - curMinute;
+            DateTime nowTime = DateTime.now();
+            DateTime alarmTime = DateTime.now().withTime(new LocalTime(hourOfDay, minute));
+
+            if (alarmTime.compareTo(nowTime) <= 0) {
+                // alarmTime раньше nowTime
+                alarmTime = alarmTime.plusDays(1);
             }
-            calendar.add(Calendar.HOUR_OF_DAY, addHour);
-            calendar.add(Calendar.MINUTE, addMin);
+
             //Create a new PendingIntent and add it to the AlarmManager
             Intent intent = new Intent(MainActivity.this, AlarmReceiverActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,
                     12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager am =
-                    (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    pendingIntent);
+            AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pendingIntent);
+            else
+                am.set(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pendingIntent);
+
+            Duration duration = new Duration(nowTime, alarmTime);
             Toast.makeText(MainActivity.this, "Alarm set to " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) +
-                    " in " + addHour + " hours & " + addMin + " minutes.", Toast.LENGTH_LONG).show();
+                    " in " + duration.getStandardDays() + " hours & " + duration.getStandardMinutes() + " minutes.", Toast.LENGTH_LONG).show();
             tpd=null;
             // input.setText("" + ((hourOfDay<10)?"0"+hourOfDay:hourOfDay) + ":" + ((minute<10)?"0"+minute:minute));
 

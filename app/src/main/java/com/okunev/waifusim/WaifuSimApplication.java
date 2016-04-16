@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -16,5 +18,6 @@ public class WaifuSimApplication extends Application {
         super.onCreate();
 
         Fabric.with(this, new Crashlytics());
+        JodaTimeAndroid.init(this);
     }
 }

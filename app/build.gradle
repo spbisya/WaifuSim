@@ -45,4 +45,5 @@ dependencies {
     }
     compile files('libs/live2d_android.jar')
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'net.danlew:android.joda:2.9.3'
 }
