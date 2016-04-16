@@ -18,6 +18,10 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by gwa on 4/10/16.
  */
@@ -27,10 +31,14 @@ public class WaifuAnswerActivity extends AppCompatActivity {
     MediaPlayer player;
     AudioManager audiomgr;
 
+    @Bind(R.id.time)
+    TextView timeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.answer_card);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
 
         player = new MediaPlayer();
@@ -68,41 +76,34 @@ public class WaifuAnswerActivity extends AppCompatActivity {
             }
         };
         timer.schedule(task, 0, 1000);
+    }
 
-        ImageButton decline = (ImageButton) findViewById(R.id.decline);
-        assert decline != null;
-        decline.setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.decline)
+    void onDeclineClick(View v) {
+        player.release();
+        ObjectAnimator animationType2 = ObjectAnimator.ofFloat(v, "rotation", 0f,
+                (6.25f * 180) / ((float) Math.PI));
+        animationType2.setDuration(700);
+        animationType2.start();
+        CountDownTimer countDownTimer = new CountDownTimer(700, 700) {
             @Override
-            public void onClick(View v) {
-                player.release();
-                ObjectAnimator animationType2 = ObjectAnimator.ofFloat(v, "rotation", 0f,
-                        (6.25f * 180) / ((float) Math.PI));
-                animationType2.setDuration(700);
-                animationType2.start();
-                CountDownTimer countDownTimer = new CountDownTimer(700, 700) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                        finish();
-                    }
-                }.start();
+            public void onTick(long millisUntilFinished) {
 
             }
-        });
 
+            @Override
+            public void onFinish() {
+
+                finish();
+            }
+        }.start();
     }
 
     private void setText() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                TextView tv = (TextView) findViewById(R.id.time);
-                tv.setText("" + ((minutes < 10) ? "0" + minutes : "" + minutes) + ":" + ((seconds < 10) ? "0" + seconds : "" + seconds));
+                timeTextView.setText("" + ((minutes < 10) ? "0" + minutes : "" + minutes) + ":" + ((seconds < 10) ? "0" + seconds : "" + seconds));
             }
         });
     }
