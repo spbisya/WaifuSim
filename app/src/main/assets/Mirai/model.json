@@ -1,0 +1,16 @@
+{
+	"version":"Sample 1.0.0",
+	"model":"D:/Users/Stas/Documents/Live2D/android/mirai/model.moc",
+	"textures":[
+		"D:/Users/Stas/Documents/Live2D/android/mirai/model.1024/texture_00.png"
+	],
+	"motions":{
+		"idle":[
+			{"file":""},
+			{"file":""},
+			{"file":"D:/Users/Stas/Documents/Live2D/android/mirai/motion/idle.mtn"}
+		]
+	},
+	"project_settings":"D:/Users/Stas/Documents/Live2D/android/mirai/model.settings.json",
+	"name":"model"
+}
