@@ -14,6 +14,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+def GooglePlayServices = '8.4.0'
 
 android {
     compileSdkVersion 23
@@ -26,8 +27,22 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
+            storeFile file('key.jks')
+            storePassword 'WaifuSim'
+            keyAlias 'WaifuSim'
+            keyPassword 'WaifuSim'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -46,4 +61,7 @@ dependencies {
     compile files('libs/live2d_android.jar')
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'net.danlew:android.joda:2.9.3'
+
+    compile "com.google.android.gms:play-services-maps:$GooglePlayServices"
+    compile "com.google.android.gms:play-services-location:$GooglePlayServices"
 }

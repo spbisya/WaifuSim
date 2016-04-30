@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -40,11 +41,14 @@
         <activity android:name=".AlarmReceiverActivity" android:theme="@style/Theme.Transparent"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name=".geofence.GeofenceSetupActivity"/>
 
         <service
             android:name=".MyService"
             android:enabled="true"
             android:exported="true" />
+
+        <service android:name=".geofence.GeofenceIntentService"/>
 
         <receiver android:name=".WaifuBootBroadcastReceiver">
             <intent-filter>
@@ -68,6 +72,11 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="f7cde2e3b252b9a9a496e46bf9e52a492fe36598" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC2UOJbJVyokubKHli_nE14F52lrxDDSGw"/>
+
     </application>
 
 </manifest>
