@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="transparent">#00000000</color>
+
+    <color name="geofence_marker_fill">#883F51B5</color>
+    <color name="geofence_marker_stroke">#303F9F</color>
 </resources>

@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.okunev.waifusim.geofence.GeofenceSetupActivity;
 import com.okunev.waifusim.network.WaifuApi;
 
 import org.joda.time.DateTime;
@@ -221,5 +222,8 @@ public class MainActivity extends AppCompatActivity {
         showDialog(1);
     }
 
-
+    @OnClick(R.id.geofence)
+    void geofenceClick() {
+        startActivity(new Intent(this, GeofenceSetupActivity.class));
+    }
 }

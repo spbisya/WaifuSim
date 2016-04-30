@@ -108,4 +108,18 @@
         android:src="@drawable/settings"
         android:onClick="goSettings" />
 
+    <ImageView
+        android:tint="#f00"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/geofence"
+        android:layout_below="@id/settings"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:background="#00ffffff"
+        android:scaleType="fitCenter"
+        android:src="@drawable/settings"
+        android:onClick="goSettings" />
+
 </RelativeLayout>
