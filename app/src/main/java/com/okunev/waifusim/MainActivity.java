@@ -7,39 +7,57 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.okunev.waifusim.network.WaifuApi;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.live2d.Live2D;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,11 +70,17 @@ public class MainActivity extends AppCompatActivity {
     TextView log;
     @Bind(R.id.token)
     TextView tokenView;
+    @Bind(R.id.viewContainer)
+    RelativeLayout relativeLayout;
 
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "MainActivity";
     Response<WaifuMessages> response;
     int mNotificationId = 999;
     SharedPreferences sPref;
     String token;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private boolean isReceiverRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +95,14 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
+
+
         ButterKnife.bind(this);
+        Live2D.init();
+        SampleGLSurfaceView surfaceView = new SampleGLSurfaceView(this,
+                (float) (getWindowManager().getDefaultDisplay().getWidth()), (float) (getWindowManager().getDefaultDisplay().getHeight()));
+        surfaceView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        relativeLayout.addView(surfaceView);
         getSupportActionBar().hide();
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         textView.setText("Wait");
@@ -103,7 +134,74 @@ public class MainActivity extends AppCompatActivity {
 
         } else
             getMessages(token);
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean("sentTokenToServer", false);
+                if (sentToken) {
+                    Toast.makeText(MainActivity.this, "send", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "error", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        // Registering BroadcastReceiver
+        registerReceiver();
+
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
+        super.onPause();
+    }
+
+    private void registerReceiver() {
+        if (!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                    new IntentFilter("registrationComplete"));
+            isReceiverRegistered = true;
+        }
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
 
     @OnClick(R.id.call)
     void onCallClick() {
@@ -153,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static final String API_KEY = "AIzaSyBXeTcI5jN3OySWGKlctawSB_7u-ovjNvQ";
 
     public void notReady(View v) {
         Toast.makeText(MainActivity.this, "This feature is not ready yet!", Toast.LENGTH_LONG).show();
@@ -171,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
     TimePickerDialog tpd = null;
     Calendar cal;
     Calendar calendar;
+
     protected Dialog onCreateDialog(int id) {
         if (id == 1) {
             tpd = new TimePickerDialog(this, myCallBack, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);
@@ -183,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int addHour, addMin;
             int curHour = cal.get(Calendar.HOUR_OF_DAY), curMinute = cal.get(Calendar.MINUTE);
-          //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
+            //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
 
             DateTime nowTime = DateTime.now();
             DateTime alarmTime = DateTime.now().withTime(new LocalTime(hourOfDay, minute));
@@ -206,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
             Duration duration = new Duration(nowTime, alarmTime);
             Toast.makeText(MainActivity.this, "Alarm set to " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) +
                     " in " + duration.getStandardDays() + " hours & " + duration.getStandardMinutes() + " minutes.", Toast.LENGTH_LONG).show();
-            tpd=null;
+            tpd = null;
             // input.setText("" + ((hourOfDay<10)?"0"+hourOfDay:hourOfDay) + ":" + ((minute<10)?"0"+minute:minute));
 
             //22:11
