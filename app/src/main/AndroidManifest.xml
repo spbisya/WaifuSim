@@ -59,21 +59,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WaifuCallActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".WaifuAnswerActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".SettingsActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".SampleActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".AlarmReceiverActivity" android:theme="@style/Theme.Transparent"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
         <activity android:name=".geofence.GeofenceSetupActivity"/>
 
         <!-- [START gcm_receiver] -->
