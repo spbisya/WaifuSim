@@ -97,11 +97,6 @@ public class SampleGLSurfaceView extends GLSurfaceView {
             gl.glLoadIdentity();
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-            double t = (UtSystem.getUserTimeMSec() / 1000.0) * 2 * Math.PI;
-            double cycle = 3.0;
-            double sin = Math.sin(t / cycle);
-            double cos = Math.sin(cosinus);
-
             live2DModel.loadParam();
 
             if (motionMgr.isFinished()) {
@@ -114,10 +109,8 @@ public class SampleGLSurfaceView extends GLSurfaceView {
 
             live2DModel.setParamFloat("PARAM_ANGLE_X", 30 * sinus);
             live2DModel.setParamFloat("PARAM_EYE_BALL_X", sinus);
-            live2DModel.setParamFloat("PARAM_EYE_BALL_Y", cosinus);
+            live2DModel.setParamFloat("PARAM_EYE_BALL_Y", 2*cosinus);
             live2DModel.setParamFloat("PARAM_BODY_X", 10 * sinus);
-            // Log.d("DRE", "Sin = " + sin + " 30*sin = " + 30 * (float) sin);
-            //   Log.d("DRE", "X = " + sinus + " Y = " + cosinus+" Screen = "+screen);
             live2DModel.setParamFloat("PARAM_ANGLE_Y", 30 * cosinus);
 
             live2DModel.setGL(gl);
@@ -131,11 +124,15 @@ public class SampleGLSurfaceView extends GLSurfaceView {
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             gl.glViewport(0, 0, width, height);
+            Log.d("Mult", "" + width + " " + height);
             gl.glMatrixMode(GL10.GL_PROJECTION);
             gl.glLoadIdentity();
 
             float modelWidth = live2DModel.getCanvasWidth();
+
             float aspect = (float) width / height;
+            //от этого зависит, появится ли вся модель в сжатом view или нет
+            Log.d("Mult", "" + modelWidth + " " + aspect);
 
             gl.glOrthof(0, modelWidth, modelWidth / aspect, 0, 0.5f, -0.5f);
         }
@@ -165,6 +162,7 @@ public class SampleGLSurfaceView extends GLSurfaceView {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
 }
