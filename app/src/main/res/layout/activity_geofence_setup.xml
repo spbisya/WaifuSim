@@ -11,7 +11,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:text="Использовать" />
+        android:text="Использовать"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/hint"
@@ -21,7 +22,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:text="Перемещай маркер по карте, чтобы выбрать свой дом. Сикбаром укажи радиус срабатывания триггера." />
+        android:text="Тыкни по своему дому, чтобы выбрать своё пмж. Сикбаром укажи радиус срабатывания триггера." />
 
     <SeekBar
         android:id="@+id/radiusSeekBar"

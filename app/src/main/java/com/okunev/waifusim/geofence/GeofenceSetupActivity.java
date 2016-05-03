@@ -1,6 +1,8 @@
 package com.okunev.waifusim.geofence;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,7 +30,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.okunev.waifusim.MainActivity;
 import com.okunev.waifusim.R;
+import com.okunev.waifusim.SettingsActivity;
 
 import java.util.Locale;
 
@@ -55,6 +61,7 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
     private GoogleMap map;
     private Circle currentCircle;
     private Marker marker;
+    private float radius;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,18 +116,15 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
-    @OnCheckedChanged(R.id.enableCheckBox)
-    void enableCheckBoxChanged(boolean value) {
-        if (value)
-            if (map != null) updateCircle(seekBar.getProgress(), map.getCameraPosition().target);
-        else {
-            sharedPreferences.edit()
-                    .putString(PREF_LAT, null)
-                    .putString(PREF_LON, null)
-                    .apply();
-            startService(GeofenceIntentService.getSetterIntent(GeofenceSetupActivity.this, 0, 0, 0));
-        }
-    }
+//    @OnCheckedChanged(R.id.enableCheckBox)
+//    void enableCheckBoxChanged(boolean value) {
+//        if (value)
+//            if (map != null) updateCircle(seekBar.getProgress(), map.getCameraPosition().target);
+//        else {
+//
+//            startService(GeofenceIntentService.getSetterIntent(GeofenceSetupActivity.this, 0, 0, 0));
+//        }
+//    }
 
     private void updateCircle(int seekBarValue, LatLng latLng) {
         if (map == null) return;
@@ -138,7 +142,8 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
             currentCircle.setRadius(rad);
         }
 
-        if (checkBox.isChecked()) {
+      //  if (checkBox.isChecked()) {
+        radius = rad;
             sharedPreferences.edit()
                     .putString(PREF_LAT, String.format(Locale.US, "%f", latLng.latitude))
                     .putString(PREF_LON, String.format(Locale.US, "%f", latLng.longitude))
@@ -147,7 +152,7 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
 
             startService(GeofenceIntentService.getSetterIntent(GeofenceSetupActivity.this,
                     latLng.latitude, latLng.longitude, rad));
-        }
+      //  }
     }
 
     @Override
@@ -159,7 +164,7 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
         String lat = sharedPreferences.getString(PREF_LAT, null);
         String lon = sharedPreferences.getString(PREF_LON, null);
 
-        LatLng latLng = new LatLng(0, 0);
+        LatLng latLng = new LatLng(37.630693, 55.758026);
         if (lat != null && lon != null) {
             try {
                 double latD = Double.parseDouble(lat);
@@ -169,16 +174,31 @@ public class GeofenceSetupActivity extends AppCompatActivity implements OnMapRea
             }
         }
 
-        marker = googleMap.addMarker(new MarkerOptions().position(latLng));
-
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        marker = googleMap.addMarker(new MarkerOptions().position(latLng)
+                .title("Geo: " + latLng.latitude + ", " + latLng.longitude));
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13f);
+        googleMap.moveCamera(cameraUpdate);
+        map.setMyLocationEnabled(true);
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                LatLng newLocation = cameraPosition.target;
-                marker.setPosition(newLocation);
-                updateCircle(seekBar.getProgress(), newLocation);
+            public void onMapClick(LatLng latLng) {
+                marker.setPosition(latLng);
+                updateCircle(seekBar.getProgress(), latLng);
             }
         });
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        sharedPreferences.edit()
+                .putString(PREF_LAT, ""+marker.getPosition().latitude)
+                .putString(PREF_LON, ""+marker.getPosition().longitude)
+                .commit();
+        startService(GeofenceIntentService.getSetterIntent(GeofenceSetupActivity.this,
+                marker.getPosition().latitude, marker.getPosition().longitude, radius));
+        finish();
+
     }
 }
