@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.okunev.waifusim.utils.FileManager;
+
 import jp.live2d.Live2D;
 
 
@@ -21,7 +23,7 @@ public class SampleActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Live2D.init();
-
+        FileManager.init(this.getApplicationContext());
         SampleGLSurfaceView view = new SampleGLSurfaceView(this, (float) (getWindowManager().getDefaultDisplay().getWidth()),
                 (float) (getWindowManager().getDefaultDisplay().getHeight()));
         setContentView(view);

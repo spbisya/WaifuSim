@@ -15,7 +15,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-def GooglePlayServices = '8.4.0'
+def GooglePlayServices = '8.3.0'
 
 android {
     compileSdkVersion 23

@@ -15,6 +15,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.okunev.waifusim.utils.FileManager;
+import com.okunev.waifusim.utils.LAppDefine;
+import com.okunev.waifusim.utils.SimpleImage;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,8 +34,9 @@ import jp.live2d.util.UtSystem;
 public class SampleGLSurfaceView extends GLSurfaceView {
     private SampleGLRenderer renderer;
     private float x = 0, y = 0;
+    private SimpleImage bg;
 
-    public SampleGLSurfaceView(final Context context, final float screen, final float height) {
+    public SampleGLSurfaceView(final Context context, final float width, final float height) {
         super(context);
         renderer = new SampleGLRenderer(context);
         setOnTouchListener(new OnTouchListener() {
@@ -42,10 +47,10 @@ public class SampleGLSurfaceView extends GLSurfaceView {
                     y = me.getY();
                     float newValueX = me.getRawX();
                     float newValueY = me.getRawY();
-                    float screenSize = screen;
 
-                    renderer.screen = screenSize;
-                    renderer.sinus = 2 * (newValueX / screenSize) - 1;
+
+                    renderer.screen = width;
+                    renderer.sinus = 2 * (newValueX / width) - 1;
                     renderer.cosinus = 1 - (newValueY / height);
                     //  Toast.makeText(context, "X = " + oldXvalue + " Y = " + oldYvalue +
                     //        " RawX = " + me.getRawX() + " RawY = " + me.getRawY(), Toast.LENGTH_LONG).show();
@@ -54,9 +59,8 @@ public class SampleGLSurfaceView extends GLSurfaceView {
                 } else if (me.getAction() == MotionEvent.ACTION_MOVE) {
                     float newValueX = me.getRawX();
                     float newValueY = me.getRawY();
-                    float screenSize = screen;
-                    renderer.screen = screenSize;
-                    renderer.sinus = 2 * (newValueX / screenSize) - 1;
+                    renderer.screen = width;
+                    renderer.sinus = 2 * (newValueX / width) - 1;
                     renderer.cosinus = 1 - (newValueY / height);
 
                     //  renderer.setSinus(oldXvalue);
@@ -109,7 +113,7 @@ public class SampleGLSurfaceView extends GLSurfaceView {
 
             live2DModel.setParamFloat("PARAM_ANGLE_X", 30 * sinus);
             live2DModel.setParamFloat("PARAM_EYE_BALL_X", sinus);
-            live2DModel.setParamFloat("PARAM_EYE_BALL_Y", 2*cosinus);
+            live2DModel.setParamFloat("PARAM_EYE_BALL_Y", cosinus/2);
             live2DModel.setParamFloat("PARAM_BODY_X", 10 * sinus);
             live2DModel.setParamFloat("PARAM_ANGLE_Y", 30 * cosinus);
 
@@ -163,6 +167,27 @@ public class SampleGLSurfaceView extends GLSurfaceView {
                 e.printStackTrace();
             }
 
+            setupBackground(gl);
+
+
+        }
+
+        private void setupBackground(GL10 context) {
+            try {
+                InputStream in = FileManager.open("image/back.png");
+                bg = new SimpleImage(context, in);
+
+                bg.setDrawRect(
+                        LAppDefine.VIEW_LOGICAL_MAX_LEFT,
+                        LAppDefine.VIEW_LOGICAL_MAX_RIGHT,
+                        LAppDefine.VIEW_LOGICAL_MAX_BOTTOM,
+                        LAppDefine.VIEW_LOGICAL_MAX_TOP);
+
+
+                bg.setUVRect(0.0f, 1.0f, 0.0f, 1.0f);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

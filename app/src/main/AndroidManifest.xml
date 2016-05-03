@@ -44,6 +44,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ModelActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".AlarmReceiverActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"

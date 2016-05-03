@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "939895881213",
+    "project_id": "waifusim-2d79f"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939895881213:android:bab9c1478641f999",
+        "android_client_info": {
+          "package_name": "com.okunev.waifusim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBPD7K44PzA7G-bU02TTPVMQ4MOCASljs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-75425366-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

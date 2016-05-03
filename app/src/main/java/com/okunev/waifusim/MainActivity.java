@@ -36,6 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.okunev.waifusim.geofence.GeofenceSetupActivity;
 import com.okunev.waifusim.network.WaifuApi;
+import com.okunev.waifusim.utils.FileManager;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -96,11 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         ButterKnife.bind(this);
-        Live2D.init();
-        SampleGLSurfaceView surfaceView = new SampleGLSurfaceView(this,
-                (float) (getWindowManager().getDefaultDisplay().getWidth()), (float) (getWindowManager().getDefaultDisplay().getHeight()));
-        surfaceView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-        relativeLayout.addView(surfaceView);
         getSupportActionBar().hide();
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         textView.setText("Wait");
@@ -261,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goSample(View v) {
-        Intent intent = new Intent(this, SampleActivity.class);
+        Intent intent = new Intent(this, ModelActivity.class);
         startActivity(intent);
     }
 
@@ -281,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int addHour, addMin;
             int curHour = cal.get(Calendar.HOUR_OF_DAY), curMinute = cal.get(Calendar.MINUTE);
-          //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
+            //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
 
             DateTime nowTime = DateTime.now();
             DateTime alarmTime = DateTime.now().withTime(new LocalTime(hourOfDay, minute));
@@ -304,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
             Duration duration = new Duration(nowTime, alarmTime);
             Toast.makeText(MainActivity.this, "Alarm set to " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) +
                     " in " + duration.getStandardDays() + " hours & " + duration.getStandardMinutes() + " minutes.", Toast.LENGTH_LONG).show();
-            tpd=null;
+            tpd = null;
             // input.setText("" + ((hourOfDay<10)?"0"+hourOfDay:hourOfDay) + ":" + ((minute<10)?"0"+minute:minute));
 
             //22:11
