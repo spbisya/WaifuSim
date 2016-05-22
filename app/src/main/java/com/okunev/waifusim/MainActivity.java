@@ -34,6 +34,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.okunev.waifusim.geofence.GeofenceSetupActivity;
 import com.okunev.waifusim.network.WaifuApi;
 import com.okunev.waifusim.utils.FileManager;
@@ -100,6 +103,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         textView.setText("Wait");
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkPlayServices()) {
+                    Log.d("DRE", "InstanceID token: " + FirebaseInstanceId.getInstance().getToken());
+                    FirebaseMessaging.getInstance().subscribeToTopic("news");
+                }
+            }
+        });
         log.setText("Log started!\n");
 
         token = sPref.getString("token", "-1");
@@ -118,14 +130,11 @@ public class MainActivity extends AppCompatActivity {
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
-
                         }
                     });
             AlertDialog d = builder.create();
             d.setTitle("No tokens");
             d.show();
-
-
         } else
             getMessages(token);
 
@@ -147,11 +156,6 @@ public class MainActivity extends AppCompatActivity {
         // Registering BroadcastReceiver
         registerReceiver();
 
-        if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM.
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
     }
 
     @Override
