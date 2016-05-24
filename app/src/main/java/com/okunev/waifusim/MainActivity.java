@@ -13,12 +13,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,18 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.itemanimators.AlphaCrossFadeAnimator;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.okunev.waifusim.geofence.GeofenceSetupActivity;
 import com.okunev.waifusim.network.WaifuApi;
 import com.okunev.waifusim.utils.FileManager;
@@ -84,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private boolean isReceiverRegistered;
 
+    private AccountHeader headerResult = null;
+    private Drawer result = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        //createDrawer(savedInstanceState);
         sPref = PreferenceManager.getDefaultSharedPreferences(this);
         textView.setText("Wait");
         textView.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +172,70 @@ public class MainActivity extends AppCompatActivity {
 
         // Registering BroadcastReceiver
         registerReceiver();
+    }
 
+
+    void createDrawer(Bundle savedInstanceState) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        final IProfile profile = new ProfileDrawerItem()
+                .withName("Mike Penz")
+                .withEmail("mikepenz@gmail.com")
+                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
+
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withCompactStyle(true)
+                .withHeaderBackground(R.drawable.header)
+                .addProfiles(
+                        profile
+                )
+                .withSavedInstance(savedInstanceState)
+                .build();
+
+        //Create the drawer
+        result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withHasStableIds(true)
+                .withItemAnimator(new AlphaCrossFadeAnimator())
+                .withAccountHeader(headerResult)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("Главная").withIcon(FontAwesome.Icon.faw_user).withIdentifier(1).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Мои вайфу").withIcon(FontAwesome.Icon.faw_bars).withIdentifier(2).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Место жительства").withIcon(FontAwesome.Icon.faw_map_marker).withIdentifier(3).withSelectable(false),
+                        new PrimaryDrawerItem().withName("Мои будильники").withIcon(FontAwesome.Icon.faw_clock_o).withIdentifier(4).withSelectable(false),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withName("Настройки").withIcon(FontAwesome.Icon.faw_cog).withIdentifier(5).withSelectable(false),
+                        new PrimaryDrawerItem().withName("О программе").withIcon(FontAwesome.Icon.faw_info_circle).withIdentifier(6).withSelectable(false)
+                ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 2) {
+                                intent = new Intent(MainActivity.this, ModelActivity.class);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                intent = new Intent(MainActivity.this, GeofenceSetupActivity.class);
+                            } else if (drawerItem.getIdentifier() == 4) {
+                                setAlarm(null);
+                            } else if (drawerItem.getIdentifier() == 5) {
+                                intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                Toast.makeText(MainActivity.this, "This feature is not ready yet!", Toast.LENGTH_LONG).show();
+                            }
+
+                            if (intent != null) {
+                                MainActivity.this.startActivity(intent);
+                            }
+                        }
+                            return false;
+
+                    }
+                })
+                .withSavedInstance(savedInstanceState)
+                .build();
     }
 
     @Override
