@@ -39,8 +39,12 @@ public class WaifuAnswerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.answer_card);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        try {
+            getSupportActionBar().hide();
+        }
+        catch (Exception l){
 
+        }
         player = new MediaPlayer();
         try {
             player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);

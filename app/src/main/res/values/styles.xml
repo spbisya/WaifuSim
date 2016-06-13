@@ -1,40 +1,41 @@
 <resources>
 
-    <style name="AppTheme" parent="MaterialDrawerTheme.TranslucentStatus">
+    <style name="AppTheme" parent="MaterialDrawerTheme">
         <!-- ...and here we setting appcompat’s color theme attrs -->
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <!-- MaterialDrawer specific values -->
-        <item name="material_drawer_background">@color/material_drawer_dark_background</item>
-        <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
+        <item name="material_drawer_background">@color/material_drawer_dark_primary_text</item>
+        <item name="material_drawer_primary_text">#5b5a5a</item>
+        <item name="material_drawer_primary_icon">#5b5a5a</item>
         <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
         </item>
+
         <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
-        <item name="material_drawer_divider">@color/material_drawer_dark_divider</item>
-        <item name="material_drawer_selected">@color/material_drawer_dark_selected</item>
-        <item name="material_drawer_selected_text">#F1433C</item>
-        <item name="material_drawer_header_selection_text">
-            @color/material_drawer_dark_primary_text
+        <item name="material_drawer_divider">#f6f6f6</item>
+        <item name="material_drawer_selected">#f6f6f6</item>
+        <item name="material_drawer_selected_text">#795548</item>
+        <item name="material_drawer_header_selection_text">@color/material_drawer_dark_primary_text
         </item>
 
         <!-- CAB :D -->
         <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="CustomActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.AppCompat.Dialog">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
-    <style name="Theme.Transparents" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/transparents</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>

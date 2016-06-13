@@ -34,8 +34,11 @@ public class WaifuCallActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_card);
-        getSupportActionBar().hide();
+        try {
+            getSupportActionBar().hide();
+        } catch (Exception l) {
 
+        }
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long pattern[] = {0, 300, 200, 300, 500};
 //start vibration with repeated count, use -1 if you don't want to repeat the vibration
@@ -49,11 +52,15 @@ public class WaifuCallActivity extends AppCompatActivity {
             player.prepare();
         } catch (IOException e) {
             try {
-                player.setDataSource(this, Uri.parse("android.resource://com.okunev.waifusim/" + R.raw.nyasha));
+                player.setDataSource(this, Uri.parse("android.resource://com.okunev.waifusim/" + R.raw.freeze));
                 player.prepare();
             } catch (IOException e1) {
                 e1.printStackTrace();
+            } catch (Exception l) {
+
             }
+        } catch (Exception l) {
+
         }
 
         player.start();

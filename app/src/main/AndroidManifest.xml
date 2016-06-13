@@ -8,8 +8,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="om.okunev.waifusim.permission.RECEIVE" />
+    <uses-permission android:name="com.okunev.waifusim.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
 
     <application
         android:name=".WaifuSimApplication"
@@ -21,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".WaifuCallActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -46,7 +48,7 @@
             android:name=".AlarmReceiverActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparents" />
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".SplashScreenActivity"
             android:configChanges="orientation"
@@ -89,6 +91,7 @@
         </receiver>
         <receiver android:name=".WaifuBatteryReceiver">
             <intent-filter>
+                <action android:name="android.intent.action.BATTERY_CHANGED"/>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
@@ -102,7 +105,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDBPD7K44PzA7G-bU02TTPVMQ4MOCASljs" />
+            android:value="AIzaSyCfqiakgAYFIKvLP37srlDloicnnNlR1sY" />
 
         <meta-data
             android:name="com.google.android.gms.version"

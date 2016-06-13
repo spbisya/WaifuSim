@@ -6,8 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.BatteryManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,12 +43,23 @@ public class WaifuBatteryReceiver extends BroadcastReceiver {
     }
 
     public void setNot(Context context, String text, int id, int resId) {
-        Notification notification = new Notification.Builder(context)
-                .setContentTitle("Your Waifu")
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_stat_1444249298867)
-                .setSound(Uri.parse("android.resource://com.okunev.waifusim/" + resId))
-                .build();
+        SharedPreferences sPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Notification notification;
+        if (sPref.getBoolean("sound", true)) {
+            notification = new Notification.Builder(context)
+                    .setContentTitle("Your Waifu")
+                    .setContentText(text)
+                    .setSmallIcon(R.drawable.ic_stat_1444249298867)
+                    .setSound(Uri.parse("android.resource://com.okunev.waifusim/" + resId))
+                    .build();
+        } else {
+
+            notification = new Notification.Builder(context)
+                    .setContentTitle("Your Waifu")
+                    .setContentText(text)
+                    .setSmallIcon(R.drawable.ic_stat_1444249298867)
+                    .build();
+        }
         notification.defaults |= Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE;
 
         int mNotificationId = id;

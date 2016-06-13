@@ -8,4 +8,5 @@
 
     <color name="geofence_marker_fill">#883F51B5</color>
     <color name="geofence_marker_stroke">#303F9F</color>
+    <color name="black_alpha_40">#00000000</color>
 </resources>

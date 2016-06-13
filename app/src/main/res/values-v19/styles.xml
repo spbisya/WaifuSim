@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="MaterialDrawerTheme">
+        <!-- ...and here we setting appcompat’s color theme attrs -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- MaterialDrawer specific values -->
+        <item name="material_drawer_background">@color/material_drawer_dark_primary_text
+        </item>
+        <item name="material_drawer_primary_text">#5b5a5a</item>
+        <item name="material_drawer_primary_icon">#5b5a5a</item>
+        <item name="material_drawer_secondary_text">
+            @color/material_drawer_dark_secondary_text
+        </item>
+
+        <item name="material_drawer_hint_text">@color/material_drawer_dark_hint_text</item>
+        <item name="material_drawer_divider">#f6f6f6</item>
+        <item name="material_drawer_selected">#f6f6f6</item>
+        <item name="material_drawer_selected_text">#795548</item>
+        <item name="material_drawer_header_selection_text">
+            @color/material_drawer_dark_primary_text
+        </item>
+
+        <!-- CAB :D -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+    </style>
+
+</resources>

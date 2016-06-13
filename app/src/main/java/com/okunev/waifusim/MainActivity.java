@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +24,17 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -54,6 +60,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.okunev.waifusim.geofence.GeofenceSetupActivity;
 import com.okunev.waifusim.network.WaifuApi;
 import com.okunev.waifusim.utils.FileManager;
+import com.okunev.waifusim.utils.MessageAdapter;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -67,6 +75,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -82,12 +91,14 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     @Bind(R.id.tv1)
     TextView textView;
-    @Bind(R.id.textView)
-    TextView log;
-    @Bind(R.id.token)
-    TextView tokenView;
-    @Bind(R.id.viewContainer)
-    RelativeLayout relativeLayout;
+    @Bind(R.id.checkBox)
+    CheckBox checkBox;
+    @Bind(R.id.floatingActionButton)
+    FloatingActionButton fab;
+    @Bind(R.id.listview)
+    ListView lv;
+    @Bind(R.id.date)
+    TextView date;
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
@@ -97,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     String token;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private boolean isReceiverRegistered;
+    ArrayList<MessageItem> items = new ArrayList<>();
 
     private AccountHeader headerResult = null;
     private Drawer result = null;
@@ -129,29 +141,58 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        log.setText("Log started!\n");
 
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, WaifuCallActivity.class);
+                startActivity(intent);
+            }
+        });
+        items = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        date.setText(c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR));
+        items.add(new MessageItem("Ой, всё!", c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE)));
+        items.add(new MessageItem("Я обиделась!", c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE)));
+        items.add(new MessageItem("Ты не зарабатываешь 50000 рублей!", c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE)));
+
+        lv.setAdapter(new MessageAdapter(this, items));
+
+
+        checkBox.setChecked(sPref.getBoolean("sound", false));
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) sPref.edit().putBoolean("sound", true).commit();
+                else sPref.edit().putBoolean("sound", false).commit();
+            }
+        });
         token = sPref.getString("token", "-1");
         //   tokenView.setText("token = " + token);
         if (token.equals("-1")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Seems you have no generated tokens... Set one?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                            intent.putExtra("new", true);
-                            startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            AlertDialog d = builder.create();
-            d.setTitle("No tokens");
-            d.show();
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Seems you have no generated tokens... Set one?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finish();
+                                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                                intent.putExtra("new", true);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                AlertDialog d = builder.create();
+                d.setTitle("No tokens");
+                d.show();
+            } catch (Exception l) {
+                Toast.makeText(this, "Покажи это сообщение Изе Питерскому: \n" + l.getMessage(), Toast.LENGTH_LONG).show();
+            }
         } else
             getMessages(token);
 
@@ -172,22 +213,54 @@ public class MainActivity extends AppCompatActivity {
 
         // Registering BroadcastReceiver
         registerReceiver();
+        createDrawer(savedInstanceState);
     }
+
+//    protected void setStatusBarTranslucent(boolean makeTranslucent) {
+//        if (makeTranslucent) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        } else {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        }
+//    }
+
 
 
     void createDrawer(Bundle savedInstanceState) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        try {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        catch (Exception l){
 
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+//setStatusBarTranslucent(true);
+//        // create our manager instance after the content view is set
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//// enable status bar tint
+//        tintManager.setStatusBarTintEnabled(true);
+//// enable navigation bar tint
+//        tintManager.setNavigationBarTintEnabled(true);
+//// set the transparent color of the status bar, 20% darker
+//        tintManager.setTintColor(Color.parseColor("#20000000"));
         final IProfile profile = new ProfileDrawerItem()
                 .withName("Mike Penz")
                 .withEmail("mikepenz@gmail.com")
-                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
-
+                .withIcon(getResources().getDrawable(R.drawable.yui))
+                .withTextColor(Color.parseColor("#795548"))
+                .withSelectedTextColor(Color.parseColor("#795548"));
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withCompactStyle(true)
-                .withHeaderBackground(R.drawable.header)
+                .withTextColor(Color.parseColor("#795548"))
+                .withHeaderBackground(R.drawable.background)
+                .withHeaderBackgroundScaleType(ImageView.ScaleType.CENTER)
                 .addProfiles(
                         profile
                 )
@@ -201,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 .withHasStableIds(true)
                 .withItemAnimator(new AlphaCrossFadeAnimator())
                 .withAccountHeader(headerResult)
+                .withDisplayBelowStatusBar(true)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName("Главная").withIcon(FontAwesome.Icon.faw_user).withIdentifier(1).withSelectable(false),
                         new PrimaryDrawerItem().withName("Мои вайфу").withIcon(FontAwesome.Icon.faw_bars).withIdentifier(2).withSelectable(false),
@@ -230,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                                 MainActivity.this.startActivity(intent);
                             }
                         }
-                            return false;
+                        return false;
 
                     }
                 })
@@ -281,19 +355,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.call)
-    void onCallClick() {
-        Intent intent = new Intent(MainActivity.this, WaifuCallActivity.class);
-        startActivity(intent);
-    }
-
     public void getMessages(String token) {
         Call<WaifuMessages> call = WaifuApi.api().loadMessages(token);
         call.enqueue(new Callback<WaifuMessages>() {
             @Override
             public void onResponse(Call<WaifuMessages> call, Response<WaifuMessages> response) {
                 MainActivity.this.response = response;
-                Toast.makeText(MainActivity.this, "" + MainActivity.this.response.body().items.size(), Toast.LENGTH_LONG).show();
+              //  Toast.makeText(MainActivity.this, "" + MainActivity.this.response.body().items.size(), Toast.LENGTH_LONG).show();
                 textView.setText("Click me!");
                 //  tokenView.setText("token = " + MainActivity.this.token);
                 textView.setOnClickListener(new View.OnClickListener() {
@@ -310,8 +378,13 @@ public class MainActivity extends AppCompatActivity {
                                 .setSmallIcon(R.drawable.ic_stat_1444249298867)
                                 .build();
 
+                        Calendar c = Calendar.getInstance();
+
+                        items.add(new MessageItem(MainActivity.this.response.body().items.get(sise).toString(), c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE)));
+                        lv.setAdapter(new MessageAdapter(MainActivity.this, items));
+                        lv.setSelection(items.size() - 1);
                         // Sets an ID for the notification
-                        log.append("Random is " + sise + " and text is " + MainActivity.this.response.body().items.get(sise).toString() + "\n");
+                        //log.append("Random is " + sise + " and text is " + MainActivity.this.response.body().items.get(sise).toString() + "\n");
 // Gets an instance of the NotificationManager service
                         NotificationManager mNotifyMgr =
                                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -329,28 +402,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static final String API_KEY = "AIzaSyBXeTcI5jN3OySWGKlctawSB_7u-ovjNvQ";
-
-    public void notReady(View v) {
-        Toast.makeText(MainActivity.this, "This feature is not ready yet!", Toast.LENGTH_LONG).show();
-    }
-
-    public void goSettings(View v) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    public void goSample(View v) {
-        Intent intent = new Intent(this, ModelActivity.class);
-        startActivity(intent);
-    }
 
     TimePickerDialog tpd = null;
     Calendar cal;
     Calendar calendar;
 
     protected Dialog onCreateDialog(int id) {
-        if (id == 1) {
+        if (id == 1543) {
             tpd = new TimePickerDialog(this, myCallBack, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);
             return tpd;
         }
@@ -359,10 +417,6 @@ public class MainActivity extends AppCompatActivity {
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            int addHour, addMin;
-            int curHour = cal.get(Calendar.HOUR_OF_DAY), curMinute = cal.get(Calendar.MINUTE);
-            //  Toast.makeText(MainActivity.this,""+hourOfDay+":"+minute,Toast.LENGTH_LONG).show();
-
             DateTime nowTime = DateTime.now();
             DateTime alarmTime = DateTime.now().withTime(new LocalTime(hourOfDay, minute));
 
@@ -385,22 +439,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Alarm set to " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) +
                     " in " + duration.getStandardDays() + " hours & " + duration.getStandardMinutes() + " minutes.", Toast.LENGTH_LONG).show();
             tpd = null;
-            // input.setText("" + ((hourOfDay<10)?"0"+hourOfDay:hourOfDay) + ":" + ((minute<10)?"0"+minute:minute));
-
-            //22:11
-            //21:06
-            //22h 54 min
         }
     };
 
     public void setAlarm(View v) {
         calendar = Calendar.getInstance();
         cal = Calendar.getInstance();
-        showDialog(1);
+        showDialog(1543);
     }
 
-    @OnClick(R.id.geofence)
-    void geofenceClick() {
-        startActivity(new Intent(this, GeofenceSetupActivity.class));
-    }
 }
